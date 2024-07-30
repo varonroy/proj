@@ -1,6 +1,6 @@
 use anyhow::anyhow;
 
-use crate::projects::{Project, Projects};
+use crate::projects::{ExitTo, Project, Projects};
 
 pub fn mark_current_directory(projects: &mut Projects) -> anyhow::Result<()> {
     let dir = std::env::current_dir()?;
@@ -10,7 +10,10 @@ pub fn mark_current_directory(projects: &mut Projects) -> anyhow::Result<()> {
             .ok_or(anyhow!("could not"))?
             .to_string_lossy()
             .to_string(),
-        dir,
+        exit_to: ExitTo {
+            dir,
+            command: Vec::new(),
+        },
     });
 
     Ok(())

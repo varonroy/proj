@@ -3,9 +3,15 @@ use std::{collections::HashSet, path::PathBuf};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
+pub struct ExitTo {
+    pub dir: PathBuf,
+    pub command: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub struct Project {
     pub name: String,
-    pub dir: PathBuf,
+    pub exit_to: ExitTo,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

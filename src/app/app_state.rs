@@ -1,15 +1,15 @@
 use itertools::Itertools;
-use std::{collections::HashMap, path::PathBuf};
+use std::collections::HashMap;
 use tui::widgets::ListState;
 
 use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
 
-use crate::projects::{Project, Projects};
+use crate::projects::{ExitTo, Project, Projects};
 
 pub enum RunState {
     Stay,
     Exit,
-    ExitToDir(PathBuf),
+    ExitToDir(ExitTo),
 }
 
 #[derive(Clone)]
@@ -59,7 +59,7 @@ impl AppState {
                     })
                     .map(|(project, (score, fuzzy_indices))| SearchResult {
                         name: project.name.clone(),
-                        dir: project.dir.to_string_lossy().to_string(),
+                        dir: project.exit_to.dir.to_string_lossy().to_string(),
                         project: project.clone(),
                         score,
                         fuzzy_match: fuzzy_indices,

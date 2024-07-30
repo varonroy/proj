@@ -2,7 +2,10 @@ mod app;
 mod app_state;
 mod styles;
 
-use crate::{config_file::Config, projects::Projects};
+use crate::{
+    config_file::Config,
+    projects::{ExitTo, Projects},
+};
 
 use crossterm::{
     event::{DisableMouseCapture, EnableMouseCapture},
@@ -11,7 +14,6 @@ use crossterm::{
 };
 use std::{
     io,
-    path::PathBuf,
     time::{Duration, Instant},
 };
 use tui::{
@@ -25,7 +27,7 @@ use self::{
 };
 use app_state::AppState;
 
-pub fn run(config: Config, projects: Projects) -> anyhow::Result<Option<PathBuf>> {
+pub fn run(config: Config, projects: Projects) -> anyhow::Result<Option<ExitTo>> {
     // setup terminal
     enable_raw_mode()?;
     let mut stdout = io::stdout();
@@ -56,7 +58,7 @@ fn main_loop<B: Backend>(
     terminal: &mut Terminal<B>,
     tick_rate: Duration,
     mut app_state: AppState,
-) -> anyhow::Result<Option<PathBuf>> {
+) -> anyhow::Result<Option<ExitTo>> {
     let mut last_tick = Instant::now();
     loop {
         terminal.draw(|f| draw(f, &mut app_state))?;
@@ -75,7 +77,7 @@ fn main_loop<B: Backend>(
         match app_state.run_state {
             RunState::Stay => {}
             RunState::Exit => return Ok(None),
-            RunState::ExitToDir(path) => return Ok(Some(path)),
+            RunState::ExitToDir(exit_to) => return Ok(Some(exit_to)),
         }
     }
 }

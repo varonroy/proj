@@ -6,7 +6,9 @@ use std::{
 };
 
 use anyhow::{anyhow, Context};
-use serde::{de::DeserializeOwned};
+use serde::de::DeserializeOwned;
+
+use crate::projects::ExitTo;
 
 /// The default directory where the projects and configuration files site
 pub fn default_dir() -> anyhow::Result<PathBuf> {
@@ -33,10 +35,21 @@ pub fn parse<T: DeserializeOwned>(path: impl AsRef<Path>) -> anyhow::Result<T> {
     Ok(value)
 }
 
-pub fn spawn_shell(path: impl AsRef<Path>) {
-    let shell = std::env::var("SHELL").unwrap();
-    let _ = Command::new(shell)
-        .current_dir(path)
+pub fn spawn_shell(exit_to: ExitTo) {
+    let args = if exit_to.command.is_empty() {
+        vec![format!("{}", std::env::var("SHELL").unwrap())]
+    } else {
+        exit_to.command
+    };
+
+    // let shell = ;
+    // tmux new ";" neww ";" splitw
+    // let shell = "tmux";
+    let mut args = args.into_iter();
+    let initial = args.next().unwrap();
+    Command::new(initial)
+        .current_dir(exit_to.dir)
+        .args(args)
         .stdin(Stdio::inherit())
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())

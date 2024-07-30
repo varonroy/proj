@@ -87,7 +87,7 @@ pub fn handle_input(app_state: &mut AppState) -> anyhow::Result<()> {
             KeyCode::Up => app_state.up_typed(),
             KeyCode::Enter => {
                 if let Some(project) = app_state.selected() {
-                    app_state.run_state = RunState::ExitToDir(project.dir.to_path_buf());
+                    app_state.run_state = RunState::ExitToDir(project.exit_to);
                 }
             }
             _ => {}
